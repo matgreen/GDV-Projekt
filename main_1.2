@@ -1,0 +1,285 @@
+// Creating a Scene 
+var scene = new THREE.Scene();
+
+//scene.fog = new THREE.Fog( 0xffffff, 1, 5000 );
+//scene.fog.color.setHSL( 0.6, 0, 1 );
+
+// Camera
+var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
+    camera.position.z = 50;
+    camera.position.y = 15;
+                     
+                                
+// Renderer
+var renderer = new THREE.WebGLRenderer();
+    renderer.setSize( window.innerWidth, window.innerHeight );
+    renderer.setClearColor(0xCCFFCC);
+    document.body.appendChild( renderer.domElement );
+   
+   
+ 
+// Light
+var directionalLight = new THREE.DirectionalLight( 0x333333, 1 );
+
+    directionalLight.position.set( 100, 100, -100 );
+    scene.add( directionalLight );
+
+
+var hemiLight = new THREE.HemisphereLight( 0xffffff, 0xffffff, 1 );
+    hemiLight.position.y = 500;
+    scene.add( hemiLight );
+    
+// SKYDOME
+
+
+
+// Events
+THREEx.WindowResize(renderer, camera);	   
+
+// Controls
+// controls = new THREE.OrbitControls(camera, renderer.domElement);
+
+renderer.domElement.addEventListener( 'mousemove', onDocumentMouseMove, false );
+renderer.domElement.addEventListener( 'mousedown', onDocumentMouseDown, false );
+renderer.domElement.addEventListener( 'mouseup', onDocumentMouseUp, false );
+
+
+var mouse = new THREE.Vector2();
+var raycaster = new THREE.Raycaster(),
+offset = new THREE.Vector3(),
+INTERSECTED, SELECTED;
+var objects = [];
+
+
+
+function onDocumentMouseMove( event ) {
+
+    event.preventDefault();
+
+    mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+    mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+
+    floor.rotation(mouse.x, mouse.y);
+
+}
+function onDocumentMouseDown( event ) {
+
+    event.preventDefault();
+    floor.position.y = -0.99;
+    
+
+}
+
+function onDocumentMouseUp( event ) {
+
+    event.preventDefault();
+floor.position.y = -5.99;
+    
+
+}
+
+
+// Hier wird der Raum erstellt
+// 
+// 
+//Texturen 
+var flooringI       = THREE.ImageUtils.loadTexture('texture/zertifiziertesTropenholz.jpg');
+var flooringII      = THREE.ImageUtils.loadTexture('texture/holz_belagII.jpg');
+var flooringIII     = THREE.ImageUtils.loadTexture('texture/holz_belagIII.jpg');
+var flooringIV      = THREE.ImageUtils.loadTexture('texture/holzbelagIV.jpg');
+var flooringV       = THREE.ImageUtils.loadTexture('texture/teppichII.jpg');
+var flooringVI      = THREE.ImageUtils.loadTexture('texture/Fliessen.jpg');
+
+var wallTextureI    = THREE.ImageUtils.loadTexture('texture/tapete_mainII.jpg');
+var wallTextureII   = THREE.ImageUtils.loadTexture('texture/tapeteI.jpg');
+var wallTextureIII  = THREE.ImageUtils.loadTexture('texture/tapeteII.jpg');
+var wallTextureIV   = THREE.ImageUtils.loadTexture('texture/tapeteIV.jpg');
+var wallTextureV    = THREE.ImageUtils.loadTexture('texture/tapeteV.jpg');
+var wallTextureVI   = THREE.ImageUtils.loadTexture('texture/tapeteVI.jpg');
+
+
+
+// Rückwand
+var wallBack = new THREE.Mesh(new THREE.PlaneGeometry(30,12,0), new THREE.MeshPhongMaterial({map: wallTextureI}));
+scene.add( wallBack );
+
+// Linke Wand
+var wallLeft = new THREE.Mesh(new THREE.PlaneGeometry(20,12,0), new THREE.MeshPhongMaterial({map: wallTextureI}));
+wallLeft.rotation.y = 1.57;
+wallLeft.position.x = -15;
+wallLeft.position.z = 10;
+scene.add( wallLeft ); 
+
+// Rechte Wand
+var wallRight = new THREE.Mesh(new THREE.PlaneGeometry(20,12,0), new THREE.MeshPhongMaterial({map: wallTextureI}));
+wallRight.rotation.y = -1.57;
+wallRight.position.x = 15;
+wallRight.position.z = 10;
+scene.add( wallRight );
+
+// Boden
+var floor = new THREE.Mesh(new THREE.PlaneGeometry(30.03,20,0), new THREE.MeshPhongMaterial({map: flooringI}));
+floor.rotation.x = -1.57;
+floor.position.y = -5.99;
+floor.position.z = 10;
+scene.add( floor );
+
+
+
+
+
+
+
+
+
+var gui = new dat.GUI();
+
+var param = {
+    bodenbelagI:    function() { floorChangeI();    },
+    bodenbelagII:   function() { floorChangeII();   },
+    bodenbelagIII:  function() { floorChangeIII();  },
+    bodenbelagIV:   function() { floorChangeIV()    },
+    bodenbelagV:    function() { floorChangeV()    },
+    bodenbelagVI:   function() { floorChangeVI()    },
+     
+    wandbelagI:     function() { wallChangeI();     },
+    wandbelagII:    function() { wallChangeII();    },
+    wandbelagIII:   function() { wallChangeIII();   },
+    wandbelagIV:    function() { wallChangeIV();    },
+    wandbelagV:     function() { wallChangeV();    },
+    wandbelagVI:    function() { wallChangeVI();    },
+    color:          '#ff0000',
+    
+    moebelI:        function() { furnitureI();      },
+};
+
+var f1 = gui.addFolder('Boden');
+f1.add(param, 'bodenbelagI').name('Boden1');
+f1.add(param, 'bodenbelagII').name('Boden2');
+f1.add(param, 'bodenbelagIII').name('Boden3');
+f1.add(param, 'bodenbelagIV').name('Boden4');
+f1.add(param, 'bodenbelagV').name('Boden5');
+f1.add(param, 'bodenbelagVI').name('Boden6');
+
+var f2 = gui.addFolder('Wand');
+f2.add(param, 'wandbelagI').name('Wand1');
+f2.add(param, 'wandbelagII').name('Wand2');
+f2.add(param, 'wandbelagIII').name('Wand3');
+f2.add(param, 'wandbelagIV').name('Wand4');
+f2.add(param, 'wandbelagV').name('Wand5');
+f2.add(param, 'wandbelagVI').name('Wand6');
+var wallColor = f2.addColor( param, 'color' ).name('Wandfarbe').listen();
+    wallColor.onChange(function(value) // onFinishChange
+    {   wallBack.material.color.setHex( value.replace("#", "0x") );
+        wallLeft.material.color.setHex( value.replace("#", "0x") );
+        wallRight.material.color.setHex( value.replace("#", "0x") );
+    });
+
+var f3 = gui.addFolder('Möbel');
+f3.add(param, 'moebelI').name('test');
+
+
+// Funktionen GUI
+function floorChangeI(){
+    floor.material = new THREE.MeshPhongMaterial({map: flooringI});
+}
+
+function floorChangeII(){
+    floor.material = new THREE.MeshPhongMaterial({map: flooringII});
+}
+
+function floorChangeIII(){
+    floor.material = new THREE.MeshPhongMaterial({map: flooringIII});
+}
+
+function floorChangeIV(){
+    floor.material = new THREE.MeshPhongMaterial({map: flooringIV});
+}
+
+function floorChangeV(){
+    floor.material = new THREE.MeshPhongMaterial({map: flooringV});
+}
+
+function floorChangeVI(){
+    floor.material = new THREE.MeshPhongMaterial({map: flooringVI});
+}
+
+function wallChangeI(){
+    wallBack.material = new THREE.MeshPhongMaterial({map: wallTextureI});
+    wallLeft.material = new THREE.MeshPhongMaterial({map: wallTextureI});
+    wallRight.material = new THREE.MeshPhongMaterial({map: wallTextureI});
+}
+
+function wallChangeII(){
+    wallBack.material = new THREE.MeshPhongMaterial({map: wallTextureII});
+    wallLeft.material = new THREE.MeshPhongMaterial({map: wallTextureII});
+    wallRight.material = new THREE.MeshPhongMaterial({map: wallTextureII});
+}
+
+function wallChangeIII(){
+    wallBack.material = new THREE.MeshPhongMaterial({map: wallTextureIII});
+    wallLeft.material = new THREE.MeshPhongMaterial({map: wallTextureIII});
+    wallRight.material = new THREE.MeshPhongMaterial({map: wallTextureIII});
+}
+
+function wallChangeIV(){
+    wallBack.material = new THREE.MeshPhongMaterial({map: wallTextureVI});
+    wallLeft.material = new THREE.MeshPhongMaterial({map: wallTextureVI});
+    wallRight.material = new THREE.MeshPhongMaterial({map: wallTextureVI});
+}
+
+function wallChangeV(){
+    wallBack.material = new THREE.MeshPhongMaterial({map: wallTextureV});
+    wallLeft.material = new THREE.MeshPhongMaterial({map: wallTextureV});
+    wallRight.material = new THREE.MeshPhongMaterial({map: wallTextureV});
+}
+
+function wallChangeVI(){
+    wallBack.material = new THREE.MeshPhongMaterial({map: wallTextureVI});
+    wallLeft.material = new THREE.MeshPhongMaterial({map: wallTextureVI});
+    wallRight.material = new THREE.MeshPhongMaterial({map: wallTextureVI});
+}
+
+function furnitureI(){
+//    var sphere = new THREE.Mesh(new THREE.SphereGeometry(2,2,2), new THREE.MeshPhongMaterial({color: 0xFFFFFF}));
+//    scene.add(sphere);
+
+var loader = new THREE.OBJMTLLoader();
+
+loader.load('sofa4.obj', 'sofa4.mtl', function(obj) {
+  // console.log(object);
+  obj.traverse(function(child) {
+    if(child instanceof THREE.Mesh) {
+      child.material.shininess = 0;
+    //  console.log(child.material);
+    }
+  });
+  obj.position.z = 2;
+  obj.position.y = -4.90;
+  obj.scale.set(0.05,0.05,0.05);
+  scene.add(obj);
+});
+// object.push(loader);
+   
+}
+
+
+// Maussteuerung
+
+
+
+
+
+
+ function render() {
+     
+        requestAnimationFrame( render );
+
+
+        renderer.render(scene, camera);
+};
+render();
+
+
+
+
