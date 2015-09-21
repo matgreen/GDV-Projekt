@@ -1,0 +1,416 @@
+// Creating a Scene 
+var scene = new THREE.Scene();
+
+// Camera
+var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
+//    camera.position.z = 50;
+//    camera.position.y = 15;
+camera.position.set( 0, 40, 65 );
+camera.lookAt( new THREE.Vector3( 0, 0, 0 ) );
+                     
+                                
+// Renderer
+var renderer = new THREE.WebGLRenderer();
+renderer.setSize( window.innerWidth, window.innerHeight );
+renderer.setClearColor(0xCCFFCC);
+document.body.appendChild( renderer.domElement );
+   
+   
+ 
+// Light
+var directionalLight = new THREE.DirectionalLight( 0x333333, 1 );
+directionalLight.position.set( 100, 100, -100 );
+scene.add( directionalLight );
+
+
+var hemiLight = new THREE.HemisphereLight( 0xffffff, 0xffffff, 1 );
+hemiLight.position.y = 500;
+scene.add( hemiLight );
+    
+    
+// SKYDOME
+// http://danni-three.blogspot.de/2013/09/threejs-skybox.html
+var imagePrefix = "skyboxPic/trop-";
+var directions  = ["left", "right", "up", "down", "front", "back"];
+// var directions  = ["xpos", "xneg", "ypos", "yneg", "zpos", "zneg"];
+var imageSuffix = ".png";
+var skyGeometry = new THREE.CubeGeometry( 1000, 1000, 1000 );	
+	
+var materialArray = [];
+for (var i = 0; i < 6; i++)
+	materialArray.push( new THREE.MeshBasicMaterial({
+		map: THREE.ImageUtils.loadTexture( imagePrefix + directions[i] + imageSuffix ),
+		side: THREE.BackSide
+	}));
+var skyMaterial = new THREE.MeshFaceMaterial( materialArray );
+var skyBox = new THREE.Mesh( skyGeometry, skyMaterial );
+scene.add( skyBox );
+
+// Audio
+var audio = document.createElement('audio');
+var source = document.createElement('source');
+source.src = 'After Laughter.mp3';
+audio.appendChild(source);
+                                
+                                
+// Events
+THREEx.WindowResize(renderer, camera);	   
+
+// Controls 
+ // controls = new THREE.OrbitControls(camera, renderer.domElement);
+
+//renderer.domElement.addEventListener( 'mousemove', onDocumentMouseMove, false );
+//renderer.domElement.addEventListener( 'mousedown', onDocumentMouseDown, false );
+//renderer.domElement.addEventListener( 'mouseup', onDocumentMouseUp, false );
+
+
+//var mouse = new THREE.Vector3();
+//
+//var raycaster = new THREE.Raycaster();
+//var offset = new THREE.Vector3(),
+//INTERSECTED, SELECTED
+
+//function onDocumentMouseMove( event ) {
+//
+//    event.preventDefault();
+//
+//    mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+//    mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+//    
+//    raycaster.setFromCamera(mouse,camera);
+//    
+//    intersects = raycaster.intersectObjects(objects);
+//
+//    if(intersects.length> 0){
+//        // intersects[0].object.material.color.setRGB(0, 0 ,5);
+//        intersects[0].object.position.set(0, 0 ,5);
+//    }
+//}
+//
+//function onDocumentMouseDown( event ) {
+//
+//    event.preventDefault();
+//    // floor.position.y = -0.99;
+//   
+//   
+//   
+//
+//}
+//
+//function onDocumentMouseUp( event ) {
+//
+//    event.preventDefault();
+//    // floor.position.y = -5.99;
+//    
+//
+//}
+
+
+// Hier wird der Raum erstellt und die benötigten Texturen initialisiert
+// 
+// 
+//Texturen 
+var flooringI       = THREE.ImageUtils.loadTexture('texture/zertifiziertesTropenholz.jpg');
+var flooringII      = THREE.ImageUtils.loadTexture('texture/holz_belagII.jpg');
+var flooringIII     = THREE.ImageUtils.loadTexture('texture/holz_belagIII.jpg');
+var flooringIV      = THREE.ImageUtils.loadTexture('texture/holzbelagIV.jpg');
+var flooringV       = THREE.ImageUtils.loadTexture('texture/teppichII.jpg');
+var flooringVI      = THREE.ImageUtils.loadTexture('texture/Fliessen.jpg');
+
+var wallTextureI    = THREE.ImageUtils.loadTexture('texture/tapete_mainII.jpg');
+var wallTextureII   = THREE.ImageUtils.loadTexture('texture/tapeteI.jpg');
+var wallTextureIII  = THREE.ImageUtils.loadTexture('texture/tapeteII.jpg');
+var wallTextureIV   = THREE.ImageUtils.loadTexture('texture/tapeteIV.jpg');
+var wallTextureV    = THREE.ImageUtils.loadTexture('texture/tapeteV.jpg');
+var wallTextureVI   = THREE.ImageUtils.loadTexture('texture/tapeteVI.jpg');
+
+var wayTexture      = THREE.ImageUtils.loadTexture('texture/stoneI.jpg');
+// var grassTexture    = THREE.ImageUtils.laodTexture('texture/grasII.jpg');
+
+// Boden
+var floor = new THREE.Mesh(new THREE.PlaneGeometry(60.03,50,0), new THREE.MeshPhongMaterial({map: flooringI}));
+floor.rotation.x = -1.57;
+//floor.position.y = -5.99;
+//floor.position.z = 10;
+scene.add( floor );
+
+// Terrasse 
+var sidewalk = new THREE.Mesh(new THREE.PlaneGeometry(68,58,0), new THREE.MeshPhongMaterial({map: wayTexture}));
+sidewalk.rotation.x = -1.57;
+sidewalk.position.y = -0.01;
+scene.add( sidewalk );
+
+// Wiese
+//var grass = new THREE.Mesh(new THREE.PlaneGeometry(80,70,0), new THREE.MeshPhongMaterial({map: grassTexture}));
+//grass.rotation.x = -1.57;
+//grass.position.y = -0.02;
+//scene.add( grass );
+
+// Rückwand
+var wallBack = new THREE.Mesh(new THREE.PlaneGeometry(60,12,0), new THREE.MeshPhongMaterial({map: wallTextureI}));
+wallBack.position.z = -25;
+wallBack.position.y = 5.99;
+scene.add( wallBack );
+
+// Linke Wand
+var wallLeft = new THREE.Mesh(new THREE.PlaneGeometry(50,12,0), new THREE.MeshPhongMaterial({map: wallTextureI}));
+wallLeft.rotation.y = 1.57;
+wallLeft.position.x = -30;
+wallLeft.position.y = 5.99;
+// wallLeft.position.z = 10;
+scene.add( wallLeft ); 
+
+// Rechte Wand
+var wallRight = new THREE.Mesh(new THREE.PlaneGeometry(50,12,0), new THREE.MeshPhongMaterial({map: wallTextureI}));
+wallRight.rotation.y = -1.57;
+wallRight.position.x = 30;
+wallRight.position.y = 5.99;
+// wallRight.position.z = 10;
+scene.add( wallRight );
+
+
+
+var EventsControls1 = new EventsControls( camera, renderer.domElement );
+EventsControls1.map = floor;
+EventsControls1.attachEvent( 'mouseOver', function () {
+
+        this.container.style.cursor = 'pointer';
+
+});
+
+EventsControls1.attachEvent( 'mouseOut', function () {
+
+        this.container.style.cursor = 'auto';
+
+});
+
+EventsControls1.attachEvent( 'dragAndDrop', function () {
+
+        this.container.style.cursor = 'move';
+        this.focused.position.y = this.previous.y;
+
+});
+
+EventsControls1.attachEvent( 'mouseUp', function () {
+
+        this.container.style.cursor = 'auto';
+
+});
+
+var radius = 0, h = 0, segments = 36;
+var geometry = new THREE.CylinderGeometry( radius, radius, h, segments );
+var material = new THREE.MeshPhongMaterial( { color: 0xFFFFF0 } );
+
+var checker = new THREE.Mesh( geometry, material );
+
+checker.position.set( -5, h / 2, 175 );
+scene.add( checker ); EventsControls1.attach( checker );
+
+var checker = new THREE.Mesh( geometry, material );
+
+checker.position.set( -75, h / 2, 175 );
+scene.add( checker ); EventsControls1.attach( checker );
+
+//var object3D = new THREE.Object3D;
+//var mesh = new THREE.Mesh( geometry, material );
+//object3D.add( mesh ); 
+//var mesh = new THREE.Mesh( geometry, material );
+//mesh.position.y = h; mesh.rotation.x = Math.PI / 2; mesh.rotation.z = Math.PI / 2;
+//object3D.add( mesh );
+//object3D.position.set( 25, h / 2, 175 );
+//scene.add( object3D );  EventsControls1.attach( object3D );
+
+
+
+// GUI
+var gui = new dat.GUI();
+
+var param = {
+    bodenbelagI:    function() { floorChangeI();    },
+    bodenbelagII:   function() { floorChangeII();   },
+    bodenbelagIII:  function() { floorChangeIII();  },
+    bodenbelagIV:   function() { floorChangeIV()    },
+    bodenbelagV:    function() { floorChangeV()     },
+    bodenbelagVI:   function() { floorChangeVI()    },
+     
+    wandbelagI:     function() { wallChangeI();     },
+    wandbelagII:    function() { wallChangeII();    },
+    wandbelagIII:   function() { wallChangeIII();   },
+    wandbelagIV:    function() { wallChangeIV();    },
+    wandbelagV:     function() { wallChangeV();     },
+    wandbelagVI:    function() { wallChangeVI();    },
+    color:          '#ff0000',
+    
+    moebelI:        function() { furnitureI();      },
+    moebelII:       function() { furnitureII();     },
+    moebelIII:      function() { furnitureIII();    },
+    
+    musikI:         function() { musicOn();         },
+    musikII:        function() { musicOff();        },
+    
+    entfernen:      function() { remove();          }
+    
+    
+};
+
+var f1 = gui.addFolder('Boden');
+f1.add(param, 'bodenbelagI').name('Boden1');
+f1.add(param, 'bodenbelagII').name('Boden2');
+f1.add(param, 'bodenbelagIII').name('Boden3');
+f1.add(param, 'bodenbelagIV').name('Boden4');
+f1.add(param, 'bodenbelagV').name('Boden5');
+f1.add(param, 'bodenbelagVI').name('Boden6');
+
+var f2 = gui.addFolder('Wand');
+f2.add(param, 'wandbelagI').name('Wand1');
+f2.add(param, 'wandbelagII').name('Wand2');
+f2.add(param, 'wandbelagIII').name('Wand3');
+f2.add(param, 'wandbelagIV').name('Wand4');
+f2.add(param, 'wandbelagV').name('Wand5');
+f2.add(param, 'wandbelagVI').name('Wand6');
+var wallColor = f2.addColor( param, 'color' ).name('Wandfarbe').listen();
+    wallColor.onChange(function(value) // onFinishChange
+    {   wallBack.material.color.setHex( value.replace("#", "0x") );
+        wallLeft.material.color.setHex( value.replace("#", "0x") );
+        wallRight.material.color.setHex( value.replace("#", "0x") );
+    });
+
+var f3 = gui.addFolder('Möbel');
+f3.add(param, 'moebelI').name('test');
+f3.add(param, 'moebelII').name('schrank');
+f3.add(param, 'moebelIII').name('collada');
+
+var f4 = gui.addFolder('Musik');
+f4.add(param, 'musikI').name('An');
+f4.add(param, 'musikII').name('Aus');
+
+gui.add( param, 'entfernen' ).name("Möbel entfernen");
+
+
+
+// Funktionen GUI
+function floorChangeI(){
+    floor.material = new THREE.MeshPhongMaterial({map: flooringI});
+}
+
+function floorChangeII(){
+    floor.material = new THREE.MeshPhongMaterial({map: flooringII});
+}
+
+function floorChangeIII(){
+    floor.material = new THREE.MeshPhongMaterial({map: flooringIII});
+}
+
+function floorChangeIV(){
+    floor.material = new THREE.MeshPhongMaterial({map: flooringIV});
+}
+
+function floorChangeV(){
+    floor.material = new THREE.MeshPhongMaterial({map: flooringV});
+}
+
+function floorChangeVI(){
+    floor.material = new THREE.MeshPhongMaterial({map: flooringVI});
+}
+
+function wallChangeI(){
+    wallBack.material = new THREE.MeshPhongMaterial({map: wallTextureI});
+    wallLeft.material = new THREE.MeshPhongMaterial({map: wallTextureI});
+    wallRight.material = new THREE.MeshPhongMaterial({map: wallTextureI});
+}
+
+function wallChangeII(){
+    wallBack.material = new THREE.MeshPhongMaterial({map: wallTextureII});
+    wallLeft.material = new THREE.MeshPhongMaterial({map: wallTextureII});
+    wallRight.material = new THREE.MeshPhongMaterial({map: wallTextureII});
+}
+
+function wallChangeIII(){
+    wallBack.material = new THREE.MeshPhongMaterial({map: wallTextureIII});
+    wallLeft.material = new THREE.MeshPhongMaterial({map: wallTextureIII});
+    wallRight.material = new THREE.MeshPhongMaterial({map: wallTextureIII});
+}
+
+function wallChangeIV(){
+    wallBack.material = new THREE.MeshPhongMaterial({map: wallTextureVI});
+    wallLeft.material = new THREE.MeshPhongMaterial({map: wallTextureVI});
+    wallRight.material = new THREE.MeshPhongMaterial({map: wallTextureVI});
+}
+
+function wallChangeV(){
+    wallBack.material = new THREE.MeshPhongMaterial({map: wallTextureV});
+    wallLeft.material = new THREE.MeshPhongMaterial({map: wallTextureV});
+    wallRight.material = new THREE.MeshPhongMaterial({map: wallTextureV});
+}
+
+function wallChangeVI(){
+    wallBack.material = new THREE.MeshPhongMaterial({map: wallTextureVI});
+    wallLeft.material = new THREE.MeshPhongMaterial({map: wallTextureVI});
+    wallRight.material = new THREE.MeshPhongMaterial({map: wallTextureVI});
+}
+
+function furnitureI(){
+    
+        var loader = new THREE.OBJMTLLoader();
+        loader.load('models/futon.obj', 'models/futon.mtl', function(object) {
+
+            object.position.z = 2;
+            //object.position.y = -5.95;
+            object.scale.set(0.04,0.04,0.04);
+            object.name = 'futon';
+            scene.add(object);
+            EventsControls1.attach( object );
+        });  
+}
+
+function furnitureII(){
+    var loaderI = new THREE.OBJMTLLoader();
+    loaderI.load('models/lettoCiliegio.obj', 'models/lettoCiliegio.mtl', function(object) {
+        
+        object.position.z = 5;
+        //object.position.y = -5.95;
+        object.position.x = 10;
+        object.scale.set(0.04,0.04,0.04);
+         object.name = 'bett';
+        scene.add(object);
+        EventsControls1.attach( object );
+    });
+}
+ 
+function furnitureIII(){
+    
+  
+}
+
+function musicOn(){
+    audio.play();
+    audio.loop = true;
+}
+function musicOff(){
+    audio.pause();
+}
+
+function remove(){
+    var selectedObject = scene.getObjectByName('futon');
+    scene.remove(selectedObject);
+    
+     var selectedObjectI = scene.getObjectByName('bett');
+    scene.remove(selectedObjectI);
+}
+
+
+ function render() {
+     
+    requestAnimationFrame( render );
+    EventsControls1.update();
+
+    renderer.render(scene, camera);
+};
+render();
+
+
+
+
+
+
+
